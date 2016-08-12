@@ -31,3 +31,8 @@ Then visit <http://localhost:3000>:
 
 - You can click on the `初始化数据` to init data in mongodb, and you will see a list of students.
 - You can click on the `删除` button to delete a student
+
+Documents
+---------
+
+- How to remove data by mongoose: <http://stackoverflow.com/questions/5809788/how-do-i-remove-documents-using-node-js-mongoose>
