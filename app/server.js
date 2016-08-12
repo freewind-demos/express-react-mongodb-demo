@@ -3,6 +3,7 @@ import webpackConfig from '../webpack.config';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import express from 'express';
+import studentsData from './students.json';
 
 const app = express();
 const compiler = webpack(webpackConfig);
@@ -23,8 +24,8 @@ app.use(webpackHotMiddleware(compiler, {
 
 app.use(express.static('./public'));
 
-app.get('/hello', function(req, res) {
-  res.send('Hello, world!');
+app.get('/students', function(req, res) {
+  res.send(studentsData);
 });
 
 app.listen(3000, function() {
