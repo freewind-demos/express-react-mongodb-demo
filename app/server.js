@@ -4,6 +4,8 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import express from 'express';
 import studentsData from './students.json';
+import db from './db/db';
+import {Student} from './db/schema';
 
 const app = express();
 const compiler = webpack(webpackConfig);
@@ -24,10 +26,37 @@ app.use(webpackHotMiddleware(compiler, {
 
 app.use(express.static('./public'));
 
-app.get('/students', function(req, res) {
-  res.send(studentsData);
+app.post('/init', function(req, res, next) {
+  Student.find().remove(function(err) {
+    if(err) return next(err);
+
+    Student.create(studentsData, (err, all) => {
+      if(err) return next(err);
+      res.json(all);
+    });
+  });
+});
+
+app.get('/students', function(req, res, next) {
+  Student.find().lean().exec((err, data) => {
+    if(err) return next(err);
+    res.json(data);
+  })
+});
+
+app.delete('/students/:id', function(req, res, next) {
+  const id = req.params.id;
+  Student.find({_id:id}).remove((err, data)=>{
+    if(err) return next(err);
+    if(data) {
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
+    }
+  });
 });
 
 app.listen(3000, function() {
+  db.connect();
   console.log('Listening on 3000');
 });
